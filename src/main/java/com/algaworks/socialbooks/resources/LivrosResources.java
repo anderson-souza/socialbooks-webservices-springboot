@@ -46,13 +46,7 @@ public class LivrosResources {
 	//BUSCAR
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public ResponseEntity<?> buscar(@PathVariable("id") Long id) {
-		Optional<Livro> livro = null;
-		
-		try {
-			livro = livrosService.buscar(id);
-		} catch (LivroNaoEncontradoException e) {
-			return ResponseEntity.notFound().build();
-		}
+		Optional<Livro> livro = livrosService.buscar(id);
 		
 		return ResponseEntity.status(HttpStatus.OK).body(livro);
 	}
@@ -61,11 +55,7 @@ public class LivrosResources {
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	public ResponseEntity<Void> deletar(@PathVariable("id") Long id) {
 		
-		try {
-			livrosService.deletar(id);
-		} catch(LivroNaoEncontradoException e) {
-			return ResponseEntity.notFound().build(); //Retorna um erro 404 caso o ID a ser excluido não seja encontrado no banco de dados
-		}
+		livrosService.deletar(id);
 		
 		return ResponseEntity.noContent().build(); //Sem conteudo para retornar
 	}
@@ -74,13 +64,7 @@ public class LivrosResources {
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
 	public ResponseEntity<Void> atualizar(@RequestBody Livro livro, @PathVariable("id") Long id) {
 		livro.setId(id);
-		try {
-			livrosService.atualizar(livro);
-		} catch (LivroNaoEncontradoException e) {
-			return ResponseEntity.notFound().build(); 
-		}
-		
-		
+		livrosService.atualizar(livro);	
 		return ResponseEntity.noContent().build();
 	}
 }
