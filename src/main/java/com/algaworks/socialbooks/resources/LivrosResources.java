@@ -16,58 +16,71 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.algaworks.socialbooks.domain.Livro;
-import com.algaworks.socialbooks.repository.LivrosRepository;
+import com.algaworks.socialbooks.services.LivrosService;
+import com.algaworks.socialbooks.services.exceptions.LivroNaoEncontradoException;
 
 @RestController
 @RequestMapping("/livros")
 public class LivrosResources {
 
 	@Autowired
-	private LivrosRepository livrosRepository;
+	private LivrosService livrosService;
 
+	//LISTAR
 	@RequestMapping(method = RequestMethod.GET)
 	public ResponseEntity<List<Livro>> listar() {
 		
-		return ResponseEntity.status(HttpStatus.OK).body(livrosRepository.findAll());
+		return ResponseEntity.status(HttpStatus.OK).body(livrosService.listar());
 	}
 
+	//SALVAR
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<Void> salvar(@RequestBody Livro livro) {
-		livrosRepository.save(livro);
+		livrosService.salvar(livro);
 		
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(livro.getId()).toUri(); //Pega o ID da requisição atual e cria um URI baseando-se neste ID
 		
 		return ResponseEntity.created(uri).build(); //Retorna o status 201 com a URI e o ID do livro criado
 	}
 
+	//BUSCAR
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public ResponseEntity<?> buscar(@PathVariable("id") Long id) {
+		Optional<Livro> livro = null;
 		
-		Optional<Livro> livro = livrosRepository.findById(id);
-		
-		if (!livro.isPresent()) { //Se o livro não existir, retorna um erro 404 not found
+		try {
+			livro = livrosService.buscar(id);
+		} catch (LivroNaoEncontradoException e) {
 			return ResponseEntity.notFound().build();
 		}
 		
 		return ResponseEntity.status(HttpStatus.OK).body(livro);
 	}
 
+	//DELETAR
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	public ResponseEntity<Void> deletar(@PathVariable("id") Long id) {
 		
 		try {
-			livrosRepository.deleteById(id);
-		} catch(EmptyResultDataAccessException e) {
+			livrosService.deletar(id);
+		} catch(LivroNaoEncontradoException e) {
 			return ResponseEntity.notFound().build(); //Retorna um erro 404 caso o ID a ser excluido não seja encontrado no banco de dados
 		}
 		
 		return ResponseEntity.noContent().build(); //Sem conteudo para retornar
 	}
 
+	//ATUALIZAR
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
 	public ResponseEntity<Void> atualizar(@RequestBody Livro livro, @PathVariable("id") Long id) {
 		livro.setId(id);
-		livrosRepository.save(livro);
+		try {
+			livrosService.atualizar(livro);
+		} catch (LivroNaoEncontradoException e) {
+			return ResponseEntity.notFound().build(); 
+		}
+		
+		
 		return ResponseEntity.noContent().build();
 	}
 }
