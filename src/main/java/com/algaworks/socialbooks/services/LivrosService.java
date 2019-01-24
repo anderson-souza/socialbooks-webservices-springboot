@@ -26,9 +26,12 @@ public class LivrosService {
 	}
 
 	public Livro buscar(Long id) {
-		Livro livro = livrosRepository.findById(id).get();
 
-		if (livro == null) {
+		Livro livro;
+
+		try {
+			livro = livrosRepository.findById(id).get();
+		} catch (Exception e) {
 			throw new LivroNaoEncontradoException("O livro não foi encontrado");
 		}
 
@@ -66,6 +69,12 @@ public class LivrosService {
 		comentario.setData(new Date());
 
 		return comentariosRepository.save(comentario);
+	}
+
+	public List<Comentario> listarComentarios(Long livroId) {
+		Livro livro = buscar(livroId);
+
+		return livro.getComentarios();
 	}
 
 }
