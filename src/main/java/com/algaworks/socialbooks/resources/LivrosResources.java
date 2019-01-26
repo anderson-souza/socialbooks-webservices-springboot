@@ -2,12 +2,16 @@ package com.algaworks.socialbooks.resources;
 
 import java.net.URI;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -48,7 +52,9 @@ public class LivrosResources {
 	public ResponseEntity<?> buscar(@PathVariable("id") Long id) {
 		Livro livro = livrosService.buscar(id);
 
-		return ResponseEntity.status(HttpStatus.OK).body(livro);
+		CacheControl cacheControl = CacheControl.maxAge(20, TimeUnit.SECONDS);
+
+		return ResponseEntity.status(HttpStatus.OK).cacheControl(cacheControl).body(livro);
 	}
 
 	// DELETAR
@@ -72,6 +78,11 @@ public class LivrosResources {
 	@RequestMapping(value = "/{id}/comentarios", method = RequestMethod.POST)
 	public ResponseEntity<Void> adicionarComentario(@PathVariable("id") Long livroId,
 			@RequestBody Comentario comentario) {
+
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+		comentario.setUsuario(authentication.getName());// Pega o usuário conectado no momento
+
 		livrosService.salvarComentario(livroId, comentario);
 
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().build().toUri();
