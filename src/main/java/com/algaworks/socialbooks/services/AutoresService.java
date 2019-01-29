@@ -5,6 +5,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import com.algaworks.socialbooks.domain.Autor;
@@ -41,6 +42,23 @@ public class AutoresService {
 			throw new AutorNaoEncontradoException("O autor não pode ser encontrado");
 		}
 		return autor;
+	}
+
+	public void deletar(Long id) {
+		try {
+			autoresRepository.deleteById(id);
+		} catch (EmptyResultDataAccessException e) {
+			throw new AutorNaoEncontradoException("O autor não foi encontrado krai");
+		}
+	}
+
+	public void atualizar(Autor autor) {
+		verificarExistencia(autor);
+		autoresRepository.save(autor);
+	}
+
+	private void verificarExistencia(Autor autor) {
+		buscar(autor.getId());
 	}
 
 }

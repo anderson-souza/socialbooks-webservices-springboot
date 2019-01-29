@@ -16,7 +16,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
+import lombok.Data;
+
 @Entity
+@Data
 public class Autor {
 
 	@Id
@@ -38,45 +41,5 @@ public class Autor {
 	@OneToMany(mappedBy = "autor") // Um determinado autor pode ter vários lviros
 	@JsonIgnore // Evita criação ciclica
 	private List<Livro> livros;
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getNome() {
-		return nome;
-	}
-
-	public void setNome(String nome) {
-		this.nome = nome;
-	}
-
-	public Date getNascimento() {
-		return nascimento;
-	}
-
-	public void setNascimento(Date nascimento) {
-		this.nascimento = nascimento;
-	}
-
-	public String getNacionalidade() {
-		return nacionalidade;
-	}
-
-	public void setNacionalidade(String nacionalidade) {
-		this.nacionalidade = nacionalidade;
-	}
-
-	public List<Livro> getLivros() {
-		return livros;
-	}
-
-	public void setLivros(List<Livro> livros) {
-		this.livros = livros;
-	}
 
 }

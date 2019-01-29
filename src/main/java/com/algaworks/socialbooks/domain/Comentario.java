@@ -18,7 +18,10 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import lombok.Data;
+
 @Entity
+@Data
 public class Comentario {
 
 	@Id
@@ -42,45 +45,5 @@ public class Comentario {
 	@JoinColumn(name = "LIVRO_ID")
 	@JsonIgnore // Utilizar ManyT One para evitar dependencia circular e travar
 	private Livro livro;
-
-	public Long getId() {
-		return id;
-	}
-
-	public Livro getLivro() {
-		return livro;
-	}
-
-	public void setLivro(Livro livro) {
-		this.livro = livro;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getTexto() {
-		return texto;
-	}
-
-	public void setTexto(String texto) {
-		this.texto = texto;
-	}
-
-	public String getUsuario() {
-		return usuario;
-	}
-
-	public void setUsuario(String usuario) {
-		this.usuario = usuario;
-	}
-
-	public Date getData() {
-		return data;
-	}
-
-	public void setData(Date data) {
-		this.data = data;
-	}
 
 }
