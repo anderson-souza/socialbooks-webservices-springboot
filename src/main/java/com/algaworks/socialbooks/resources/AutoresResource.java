@@ -58,7 +58,7 @@ public class AutoresResource {
 
 	// UPDATE
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<Void> atualizar(@RequestBody Autor autor, @PathVariable Long id) {
+	public ResponseEntity<Void> atualizar(@RequestBody Autor autor, @PathVariable("id") Long id) {
 		autor.setId(id);
 		autoresService.atualizar(autor);
 		return ResponseEntity.noContent().build();
