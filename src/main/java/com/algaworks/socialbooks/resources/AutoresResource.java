@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.algaworks.socialbooks.domain.Autor;
+import com.algaworks.socialbooks.domain.DTO.AutorDTO;
 import com.algaworks.socialbooks.services.AutoresService;
 
 @RestController
@@ -34,11 +35,17 @@ public class AutoresResource {
 		return ResponseEntity.status(HttpStatus.OK).body(autoresService.listar());
 	}
 
+	@RequestMapping(value = "/dto", method = RequestMethod.GET)
+	public ResponseEntity<List<AutorDTO>> listarDto() {
+		return ResponseEntity.status(HttpStatus.OK).body(autoresService.listarDto());
+	}
+
 	// POST
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<Void> salvar(@Valid @RequestBody Autor autor) {
 		autoresService.salvar(autor);
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(autor.getId()).toUri();
+		final URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(autor.getId())
+				.toUri();
 		return ResponseEntity.created(uri).build();
 	}
 

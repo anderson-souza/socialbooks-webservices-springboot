@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.algaworks.socialbooks.domain.Livro;
+import com.algaworks.socialbooks.domain.DTO.LivroDTO;
 import com.algaworks.socialbooks.services.LivrosService;
 
 @RestController
@@ -36,12 +37,18 @@ public class LivrosResources {
 		return ResponseEntity.status(HttpStatus.OK).body(livrosService.listar());
 	}
 
+	@RequestMapping(method = RequestMethod.GET, value = "/listar-dto")
+	public ResponseEntity<List<LivroDTO>> listarDto() {
+		return ResponseEntity.status(HttpStatus.OK).body(livrosService.listarDto());
+	}
+
 	// SALVAR
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<Void> salvar(@Valid @RequestBody Livro livro) {
 		livrosService.salvar(livro);
 		// Pega o ID da requisição atual e cria um URI baseando-se neste ID
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(livro.getId()).toUri();
+		final URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(livro.getId())
+				.toUri();
 
 		return ResponseEntity.created(uri).build(); // Retorna o status 201 com a URI e o ID do livro criado
 	}
@@ -49,9 +56,9 @@ public class LivrosResources {
 	// BUSCAR
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public ResponseEntity<?> buscar(@PathVariable("id") Long id) {
-		Livro livro = livrosService.buscar(id);
+		final Livro livro = livrosService.buscar(id);
 
-		CacheControl cacheControl = CacheControl.maxAge(20, TimeUnit.SECONDS);
+		final CacheControl cacheControl = CacheControl.maxAge(20, TimeUnit.SECONDS);
 
 		return ResponseEntity.status(HttpStatus.OK).cacheControl(cacheControl).body(livro);
 	}

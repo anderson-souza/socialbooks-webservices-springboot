@@ -9,6 +9,8 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import com.algaworks.socialbooks.domain.Autor;
+import com.algaworks.socialbooks.domain.DTO.AutorDTO;
+import com.algaworks.socialbooks.domain.DTO.GenericDTOConverter;
 import com.algaworks.socialbooks.repository.AutoresRepository;
 import com.algaworks.socialbooks.services.exceptions.AutorExistenteException;
 import com.algaworks.socialbooks.services.exceptions.AutorNaoEncontradoException;
@@ -23,9 +25,13 @@ public class AutoresService {
 		return autoresRepository.findAll();
 	}
 
+	public List<AutorDTO> listarDto() {
+		return GenericDTOConverter.mapList(autoresRepository.findAll(), AutorDTO.class);
+	}
+
 	public Autor salvar(Autor autor) {
 		if (autor.getId() != null) {
-			Optional<Autor> a = autoresRepository.findById(autor.getId());
+			final Optional<Autor> a = autoresRepository.findById(autor.getId());
 
 			if (a.isPresent()) {
 				throw new AutorExistenteException("O autor já existe");
@@ -38,7 +44,7 @@ public class AutoresService {
 		Autor autor;
 		try {
 			autor = autoresRepository.findById(id).get();
-		} catch (NoSuchElementException e) {
+		} catch (final NoSuchElementException e) {
 			throw new AutorNaoEncontradoException("O autor não pode ser encontrado");
 		}
 		return autor;
@@ -47,7 +53,7 @@ public class AutoresService {
 	public void deletar(Long id) {
 		try {
 			autoresRepository.deleteById(id);
-		} catch (EmptyResultDataAccessException e) {
+		} catch (final EmptyResultDataAccessException e) {
 			throw new AutorNaoEncontradoException("O autor não foi encontrado krai");
 		}
 	}

@@ -7,6 +7,8 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import com.algaworks.socialbooks.domain.Livro;
+import com.algaworks.socialbooks.domain.DTO.GenericDTOConverter;
+import com.algaworks.socialbooks.domain.DTO.LivroDTO;
 import com.algaworks.socialbooks.repository.LivrosRepository;
 import com.algaworks.socialbooks.services.exceptions.LivroNaoEncontradoException;
 
@@ -19,13 +21,17 @@ public class LivrosService {
 		return livrosRepository.findAll();
 	}
 
+	public List<LivroDTO> listarDto() {
+		return GenericDTOConverter.mapList(livrosRepository.findAll(), LivroDTO.class);
+	}
+
 	public Livro buscar(Long id) {
 
 		Livro livro;
 
 		try {
 			livro = livrosRepository.findById(id).get();
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			throw new LivroNaoEncontradoException("O livro não foi encontrado");
 		}
 
@@ -42,7 +48,7 @@ public class LivrosService {
 	public void deletar(Long id) {
 		try {
 			livrosRepository.deleteById(id);
-		} catch (EmptyResultDataAccessException e) {
+		} catch (final EmptyResultDataAccessException e) {
 			throw new LivroNaoEncontradoException("O livro não pôde ser encontrado");
 		}
 	}
