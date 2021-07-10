@@ -61,7 +61,7 @@ class AutoresServiceTest {
     }
 
     @Test
-    void deletar() {
+    void deletar() throws Exception {
         salvarAutor();
         autoresService.deletar(1L);
         assertThat(autoresRepository.findAll()).isEmpty();
