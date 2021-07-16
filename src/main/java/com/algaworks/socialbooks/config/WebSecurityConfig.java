@@ -10,16 +10,18 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-	@Autowired
-	public void ConfigureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-		auth.inMemoryAuthentication().withUser("algaworks").password("{noop}s3nh4").roles("USER");
-	}
+    @Autowired
+    public void ConfigureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        auth.inMemoryAuthentication().withUser("algaworks").password("{noop}s3nh4").roles("USER");
+    }
 
-	protected void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests().antMatchers("/h2-console/**").permitAll().antMatchers(HttpMethod.OPTIONS, "/**")
-				.permitAll().anyRequest().authenticated().and().httpBasic().and().csrf().disable(); // Pesquisar depois
+    protected void configure(HttpSecurity http) throws Exception {
+        http.authorizeRequests().antMatchers("/h2-console/**").permitAll()
+            .antMatchers(HttpMethod.OPTIONS, "/**")
+            .permitAll().anyRequest().authenticated().and().httpBasic().and().csrf()
+            .disable(); // Pesquisar depois
 
-		http.headers().frameOptions().disable();// sobre CSRF
-	}
+        http.headers().frameOptions().disable();// sobre CSRF
+    }
 
 }

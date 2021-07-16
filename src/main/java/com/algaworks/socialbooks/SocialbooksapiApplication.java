@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class SocialbooksapiApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(SocialbooksapiApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(SocialbooksapiApplication.class, args);
+    }
 
 }
